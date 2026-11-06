@@ -1,0 +1,239 @@
+@page
+@model ProductManagement.Web.Pages.Products.IndexModel
+
+@{
+    ViewData["Title"] = "Product Inventory Portal";
+}
+
+<div class="mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1 mb-2 fw-semibold">
+                SMT Enterprise PMS
+            </span>
+            <h1 class="h2 fw-bold text-dark mb-1">Product Catalog & Inventory</h1>
+            <p class="text-secondary small mb-0">Decoupled Repository Pattern Architecture with Asynchronous ADO.NET Access</p>
+        </div>
+        <div>
+            <a asp-page="Create" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm fw-semibold">
+                Register New Product
+            </a>
+        </div>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show rounded-pill px-4" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show rounded-pill px-4" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<!-- KPI Overview Metrics -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-secondary small text-uppercase fw-semibold">Total Stock Units</span>
+                    <h3 class="fw-bold mb-0 text-dark">@Model.Summary.TotalItems</h3>
+                </div>
+                <div class="badge bg-light text-primary rounded-circle p-3 fs-5">
+                    ALL
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-secondary small text-uppercase fw-semibold">Active Listings</span>
+                    <h3 class="fw-bold mb-0 text-success">@Model.Summary.ActiveProducts</h3>
+                </div>
+                <div class="badge bg-success-subtle text-success rounded-circle p-3 fs-5">
+                    ACT
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-secondary small text-uppercase fw-semibold">Low Stock Items</span>
+                    <h3 class="fw-bold mb-0 text-danger">@Model.Summary.LowStockCount</h3>
+                </div>
+                <div class="badge bg-danger-subtle text-danger rounded-circle p-3 fs-5">
+                    LOW
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-secondary small text-uppercase fw-semibold">Valuation</span>
+                    <h3 class="fw-bold mb-0 text-primary">@Model.Summary.TotalValuation.ToString("C")</h3>
+                </div>
+                <div class="badge bg-primary-subtle text-primary rounded-circle p-3 fs-5">
+                    VAL
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search & Filtering Toolbar -->
+<div class="card border-0 shadow-sm rounded-4 p-3 mb-4">
+    <form method="get" class="row g-2 align-items-center">
+        <div class="col-md-5">
+            <div class="input-group">
+                <input type="text" asp-for="Query" class="form-control rounded-pill px-4" placeholder="Search by SKU, title, or description..." />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <select asp-for="Category" class="form-select rounded-pill px-3">
+                <option value="All">All Categories</option>
+                @foreach (var cat in Model.Categories)
+                {
+                    <option value="@cat">@cat</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select asp-for="StatusFilter" class="form-select rounded-pill px-3">
+                <option value="All">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+                <option value="Backorder">Backorder</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-dark rounded-pill px-4 flex-grow-1">Filter</button>
+            <a asp-page="Index" class="btn btn-outline-secondary rounded-pill px-3">Reset</a>
+        </div>
+    </form>
+</div>
+
+<!-- Product Table View -->
+@if (Model.Products.Count == 0)
+{
+    <div class="card border-0 shadow-sm rounded-4 text-center py-5">
+        <div class="py-4">
+            <h4 class="fw-semibold text-secondary">No catalog entries matched your search criteria</h4>
+            <p class="text-muted small">Try adjusting your filters or click below to register a product.</p>
+            <a asp-page="Create" class="btn btn-primary rounded-pill px-4 mt-2">
+                Register Product
+            </a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light text-secondary text-uppercase small">
+                    <tr>
+                        <th class="ps-4" style="width: 100px;">SKU</th>
+                        <th style="width: 80px;">Visual</th>
+                        <th>Item Details</th>
+                        <th>Category</th>
+                        <th>Unit Price</th>
+                        <th>Stock Level</th>
+                        <th>Status</th>
+                        <th class="text-end pe-4" style="width: 220px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Products)
+                    {
+                        <tr>
+                            <td class="ps-4">
+                                <span class="badge bg-light text-dark font-monospace border rounded-pill px-2 py-1">
+                                    @item.Sku
+                                </span>
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@Url.Content("~/" + item.ImageUrl)"
+                                         alt="@item.Title"
+                                         class="rounded-3 border shadow-xs"
+                                         style="width: 54px; height: 54px; object-fit: cover;" />
+                                }
+                                else
+                                {
+                                    <div class="rounded-3 bg-light border text-center text-muted small d-flex align-items-center justify-content-center"
+                                         style="width: 54px; height: 54px;">
+                                        N/A
+                                    </div>
+                                }
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark">@item.Title</div>
+                                <div class="text-muted small text-truncate" style="max-width: 280px;">@item.Description</div>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary-subtle text-secondary rounded-pill px-3">
+                                    @item.Category
+                                </span>
+                            </td>
+                            <td class="fw-bold text-dark">
+                                @item.Price.ToString("C")
+                            </td>
+                            <td>
+                                @if (item.StockQuantity == 0)
+                                {
+                                    <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Out of Stock</span>
+                                }
+                                else if (item.StockQuantity <= 5)
+                                {
+                                    <span class="badge bg-warning-subtle text-dark rounded-pill px-3">@item.StockQuantity left</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success-subtle text-success rounded-pill px-3">@item.StockQuantity units</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.Status == "Active")
+                                {
+                                    <span class="badge bg-success rounded-pill px-3">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary rounded-pill px-3">@item.Status</span>
+                                }
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="btn-group" role="group">
+                                    <a asp-page="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info rounded-pill px-3 me-1">
+                                        Inspect
+                                    </a>
+                                    <a asp-page="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning rounded-pill px-3 me-1">
+                                        Edit
+                                    </a>
+                                    <a asp-page="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                        Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

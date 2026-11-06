@@ -1,0 +1,55 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Executive Overview";
+}
+
+<div class="row align-items-center py-5">
+    <div class="col-lg-7">
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1 mb-3 fw-semibold">
+            Enterprise Architecture &bull; SMT Lab 08
+        </span>
+        <h1 class="display-4 fw-bold text-dark mb-3">
+            Product Management System
+        </h1>
+        <p class="lead text-secondary mb-4">
+            A production-ready enterprise inventory management platform engineered with ASP.NET Core Razor Pages, asynchronous ADO.NET SQL access, and an interface-driven Repository Design Pattern.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+            <a asp-page="/Products/Index" class="btn btn-primary rounded-pill px-5 py-3 fw-semibold shadow-sm">
+                Open Inventory Catalog &rarr;
+            </a>
+            <a asp-page="/Products/Create" class="btn btn-outline-dark rounded-pill px-4 py-3 fw-semibold">
+                Register New Product
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-5 mt-4 mt-lg-0">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+            <h5 class="fw-bold mb-3 text-dark">Architectural Highlights</h5>
+            <ul class="list-unstyled mb-0 d-grid gap-3">
+                <li class="d-flex align-items-start gap-3">
+                    <span class="badge bg-light text-primary border rounded-circle p-2 mt-1">01</span>
+                    <div>
+                        <strong class="text-dark d-block">Interface-Driven Repository Pattern</strong>
+                        <span class="text-muted small">Formal <code class="text-primary">IProductRepository</code> decoupling data access from web controllers.</span>
+                    </div>
+                </li>
+                <li class="d-flex align-items-start gap-3">
+                    <span class="badge bg-light text-success border rounded-circle p-2 mt-1">02</span>
+                    <div>
+                        <strong class="text-dark d-block">Parameterized Asynchronous ADO.NET</strong>
+                        <span class="text-muted small">High-throughput SQL operations guarded against SQL injection vulnerabilities.</span>
+                    </div>
+                </li>
+                <li class="d-flex align-items-start gap-3">
+                    <span class="badge bg-light text-info border rounded-circle p-2 mt-1">03</span>
+                    <div>
+                        <strong class="text-dark d-block">Dynamic Multipart Media Storage</strong>
+                        <span class="text-muted small">Automated asset hashing, 8MB boundary validation, and orphaned file purging.</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
